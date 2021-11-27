@@ -1,6 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 import requests
-import os, sys
+import os, sys, time
 cls = lambda: os.system('cls')
 
 link = ''
@@ -21,26 +21,29 @@ def recopilatorio(archivo, link):
 	
 def proceso(urls):
 	res = requests.get(urls, timeout=2)
-	if res.status_code == 200:
+	if res.status_code != 404:
 		match.append('👀 -> :' +urls)
 	else: 
 		print('😕 -> '+urls)
 	
 def main():
+	start = time.perf_counter()
 	if len(sys.argv) < 4:
 		cls()
-		print(f'[*] Uso del programa...! \n\n nombrePrograma.py "url a escanear"  "directorio diccionario"  #Threads')
+		print(f'[*] Uso del programa...! \n\n nombrePrograma.py  url a escanear  "directorio diccionario"  #Threads')
 	else:
-		url = sys.argv[1]
+		url = str(sys.argv[1])
 		ruta =os.getcwd()+sys.argv[2]
-		threads = int(sys.argv[3]) 
+		threads = int(sys.argv[3]) 	
 		cls()
+		print(f'[+] Comenzando ... Espere un momento por favor . . .')
 		recopilatorio(ruta, url)
 		if directorios:
 			with ThreadPoolExecutor(max_workers=threads) as executor:
 				executor.map(proceso, directorios)
+			finish = time.perf_counter()
 			print('\nDirectorios encontrados : ', len(match))
-			print(f'Palabras probadas: {len(directorios)}\n')
+			print(f"Terminado en {round(finish-start, 2)} segundos\n")
 			for found in match:
 				print(found)
 		else:
