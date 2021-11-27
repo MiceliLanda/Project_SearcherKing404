@@ -2,11 +2,8 @@ from concurrent.futures import ThreadPoolExecutor
 import requests
 import os, sys, time
 cls = lambda: os.system('cls')
-
-link = ''
-archivo = ''
-match = []
 directorios = []
+contador =0
 
 def recopilatorio(archivo, link):
 	valores = open(archivo, "r")
@@ -20,14 +17,13 @@ def recopilatorio(archivo, link):
 	valores.close()
 	
 def proceso(urls):
-	res = requests.get(urls, timeout=2)
+	global contador
+	res = requests.get(urls, timeout=2);
 	if res.status_code != 404:
-		match.append('👀 -> :' +urls)
-	""" else: 
-		print('😕 -> '+urls) """
-	
+		contador+=1
+		print(f'   {os.getpid()}  url-> {urls}')
+
 def main():
-	start = time.perf_counter()
 	if len(sys.argv) < 4:
 		cls()
 		print(f'[*] Uso del programa...! \n\n nombrePrograma.py  url a escanear  "directorio diccionario"  #Threads')
@@ -36,17 +32,18 @@ def main():
 		ruta =os.getcwd()+sys.argv[2]
 		threads = int(sys.argv[3]) 	
 		cls()
-		print(f'[+] Comenzando ... Espere un momento por favor . . .')
+		print(f'[+] Comenzando ... Espere un momento por favor . . .\n')
 		recopilatorio(ruta, url)
 		if directorios:
-			with ThreadPoolExecutor(max_workers=threads) as executor:
-				executor.map(proceso, directorios)
+			start = time.perf_counter()
+			with ThreadPoolExecutor(max_workers=threads) as p:
+				p.map(proceso, directorios)
 			finish = time.perf_counter()
-			print('\nDirectorios encontrados : ', len(match))
-			print(f"Terminado en {round(finish-start, 2)} segundos\n")
-			for found in match:
-				print(found)
+			print(f"Fuzzing terminado en {round(finish-start, 2)} segundos\n")
+			print('\nDirectorios encontrados : ', contador)
 		else:
 			print('Ha ocurrido un error')
 
-main()
+if __name__ == '__main__':
+
+    main()  
