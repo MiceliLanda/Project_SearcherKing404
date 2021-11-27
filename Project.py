@@ -23,8 +23,8 @@ def proceso(urls):
 	res = requests.get(urls, timeout=2)
 	if res.status_code != 404:
 		match.append('👀 -> :' +urls)
-	else: 
-		print('😕 -> '+urls)
+	""" else: 
+		print('😕 -> '+urls) """
 	
 def main():
 	start = time.perf_counter()
