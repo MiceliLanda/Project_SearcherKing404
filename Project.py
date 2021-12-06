@@ -41,7 +41,7 @@ def proceso():
 
 def Peticiones(ourl):
     try:
-        res = requests.get(ourl, timeout=5)
+        res = requests.get(ourl, timeout=2)
         return res.status_code, ourl
     except:
         return "Ha ocurrido un error, verifique la url.\n", ourl
